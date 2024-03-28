@@ -1,13 +1,11 @@
-//
-// Created by Utilisateur on 26/03/2024.
-//
-// Fonction pour fair un menu cliquable
-#include "overck.h"
+#include "bibli.h."
 void afficher_menu() {
+
+    show_mouse(screen);
     clear_to_color(screen, makecol(255, 255, 255));
-    BITMAP* image1 = load_bitmap("image1.bmp", NULL);
+    BITMAP* image1 = load_bitmap("FE.bmp", NULL);
     if (!image1) {
-        allegro_message("impossible de charger l image image1.bmp!");
+        allegro_message("impossible de charger l image fondEcran.bmp");
         return;
     }
     blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -47,4 +45,5 @@ void afficher_menu() {
             jouer_color = makecol(0, 0, 255);
         }
     }
+    show_mouse(NULL);
 }
