@@ -5,7 +5,7 @@ void afficher_menu() {
     clear_to_color(screen, makecol(255, 255, 255));
     BITMAP* image1 = load_bitmap("FE.bmp", NULL);
     if (!image1) {
-        allegro_message("impossible de charger l image fondEcran.bmp");
+        allegro_message("impossible de charger l image  du fond d ecran");
         return;
     }
     blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -43,6 +43,10 @@ void afficher_menu() {
             }
         } else {
             jouer_color = makecol(0, 0, 255);
+        }
+        if (key[KEY_R]) {
+            afficher_regles();
+            clear_keybuf();
         }
     }
     show_mouse(NULL);
