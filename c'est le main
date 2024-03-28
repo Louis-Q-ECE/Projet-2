@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <allegro.h>
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define GRID_SIZE 40
+#define PLAYER_SIZE 20
+#define PLAYER_SPEED 4 // Vitesse de déplacement du joueur
+
+BITMAP *imageJ1; // Image du joueur 1
+BITMAP *imageJ2; // Image du joueur 2
+
+// Structure pour representer les joueurs
+typedef struct {
+    int x, y; // Position des joueurs sur le plateau
+} Player;
+
+// Initialiser les joueurs
+Player joueur1 = {GRID_SIZE, GRID_SIZE};
+Player joueur2 = {SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE, SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE};
+
+int afficher_menu();
+int afficher_regles();
+
+int main() {
+    // Initialisation
+    allegro_init();
+    install_keyboard();
+    install_mouse();
+    set_color_depth(32);
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+
+    // Chargement des images des joueurs
+    imageJ1 = load_bitmap("imageJ1.bmp", NULL);
+    imageJ2 = load_bitmap("imageJ2.bmp", NULL);
+
+    // Afficher le menu cliquable avec l'image
+    afficher_menu();
+
+    // Création d'une bitmap temporaire pour le double tampon
+    BITMAP *buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // Boucle de jeu
+    while (!key[KEY_ESC]) {
+        // Si la touche 'r' est enfoncée, afficher les règles
+        if (key[KEY_R]) {
+            afficher_regles();
+            rest(1000);
+        }
+
+        // Gestion des mouvements du joueur 1
+        if (key[KEY_W]) joueur1.y -= PLAYER_SPEED;
+        if (key[KEY_S]) joueur1.y += PLAYER_SPEED;
+        if (key[KEY_A]) joueur1.x -= PLAYER_SPEED;
+        if (key[KEY_D]) joueur1.x += PLAYER_SPEED;
+
+        // Gestion des mouvements du joueur 2
+        if (key[KEY_UP]) joueur2.y -= PLAYER_SPEED;
+        if (key[KEY_DOWN]) joueur2.y += PLAYER_SPEED;
+        if (key[KEY_LEFT]) joueur2.x -= PLAYER_SPEED;
+        if (key[KEY_RIGHT]) joueur2.x += PLAYER_SPEED;
+
+        // Limiter la position des joueurs dans les limites du plateau
+        if (joueur1.x < GRID_SIZE) joueur1.x = GRID_SIZE;
+        if (joueur1.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur1.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
+        if (joueur1.y < GRID_SIZE) joueur1.y = GRID_SIZE;
+        if (joueur1.y >= SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE) joueur1.y = SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE;
+
+        if (joueur2.x < GRID_SIZE) joueur2.x = GRID_SIZE;
+        if (joueur2.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur2.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
+        if (joueur2.y < GRID_SIZE) joueur2.y = GRID_SIZE;
+        if (joueur2.y >= SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE) joueur2.y = SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE;
+
+        // Dessiner le plateau quadrillé avec des blocs violets sur les extrémités droite et gauche,
+        // et des bords verts sur les extrémités hautes et basses sur la bitmap temporaire
+        clear_bitmap(buffer); // Effacer la bitmap temporaire avant de redessiner
+        for (int x = 0; x < SCREEN_WIDTH; x += GRID_SIZE) {
+            for (int y = 0; y < SCREEN_HEIGHT; y += GRID_SIZE) {
+                // Dessiner des blocs violets sur les extrémités droite et gauche
+                if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
+                    rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(255, 0, 255)); // Violet
+                }
+                    // Dessiner des bords verts sur les extrémités hautes et basses
+                else if (y == 0 || y == SCREEN_HEIGHT - GRID_SIZE) {
+                    rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 255, 0)); // Vert
+                }
+                else {
+                    rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(192, 192, 192)); // Gris pour le reste du plateau
+                }
+
+                // Dessiner une bordure noire autour de chaque bloc vert
+                if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
+                    rect(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 0, 0));
+                }
+                    // Dessiner une bordure noire autour de chaque bloc violet
+                else if (y == 0 || y == SCREEN_HEIGHT - GRID_SIZE) {
+                    rect(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 0, 0));
+                }
+            }
+        }
+
+        // Dessiner les joueurs sur la bitmap temporaire
+        draw_sprite(buffer, imageJ1, joueur1.x, joueur1.y);
+        draw_sprite(buffer, imageJ2, joueur2.x, joueur2.y);
+
+        // Copier la bitmap temporaire sur l'écran
+        blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        // Attendre un court instant pour limiter la vitesse de déplacement
+        rest(5);
+    }
+
+    // Libération des ressources Allegro
+    destroy_bitmap(buffer);
+    destroy_bitmap(imageJ1);
+    destroy_bitmap(imageJ2);
+    allegro_exit();
+
+    return 0;
+}
+END_OF_MAIN()
