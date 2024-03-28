@@ -1,0 +1,18 @@
+//
+// Created by Utilisateur on 26/03/2024.
+//
+// Fonction pour afficher les regles
+#include "overck.h"
+void afficher_regles() {
+    clear_to_color(screen, makecol(255, 255, 255));
+    BITMAP* image2 = load_bitmap("image2.bmp", NULL);
+    if (!image2) {
+        allegro_message("impossible de charger l image2.bmp!");
+        return;
+    }
+    blit(image2, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    destroy_bitmap(image2);
+    while (!key[KEY_ESC] && !key[KEY_R]) {
+        rest(1);
+    }
+}
