@@ -1,18 +1,47 @@
-//
-// Created by Utilisateur on 26/03/2024.
-//
-// Fonction pour afficher les regles
-#include "overck.h"
+#include "bibli.h"
+
 void afficher_regles() {
     clear_to_color(screen, makecol(255, 255, 255));
-    BITMAP* image2 = load_bitmap("image2.bmp", NULL);
+
+    BITMAP* image2 = load_bitmap("FE.bmp", NULL);
     if (!image2) {
-        allegro_message("impossible de charger l image2.bmp!");
+        allegro_message("Impossible de charger fond ecran");
         return;
     }
     blit(image2, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     destroy_bitmap(image2);
-    while (!key[KEY_ESC] && !key[KEY_R]) {
+
+    // Affichage des règles du jeu
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4, makecol(0, 0, 0), -1,
+                         "En travaillant en équipe, vos camarades cuisiniers et vous devez préparer,");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4 + 20, makecol(0, 0, 0), -1,
+                         "cuisiner et servir toute une variété de plats délicieux avant que le client");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4 + 40, makecol(0, 0, 0), -1,
+                         "affamé ne claque la porte. Affûtez vos couteaux et dépoussiérez votre");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4 + 60, makecol(0, 0, 0), -1,
+                         "tablier, gardez la pêche ou les carottes seront cuites dans cette folie");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4 + 80, makecol(0, 0, 0), -1,
+                         "culinaire!");
+
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, makecol(0, 0, 0), -1,
+                         "Dans ce jeu vous devrez être capable de couper, cuire, assembler et bouillir");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20, makecol(0, 0, 0), -1,
+                         "toute une variété d’ingrédients en fonction des demandes particulières");
+    textprintf_centre_ex(screen, font, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 40, makecol(0, 0, 0), -1,
+                         "des clients.");
+
+    textout_centre_ex(screen, font, "Appuyez sur la touche 'r' pour revenir au menu principal.", SCREEN_WIDTH / 2, SCREEN_HEIGHT - 40, makecol(0, 0, 0), -1);
+
+    
+    
+    // pb : le menu des regles marche bien juste il faut regler le fait qu'il faut m'intenir la touche r
+    while (!key[KEY_ESC]) {
+
+        if (key[KEY_R]) {
+            while (key[KEY_R]) rest(1); // Attend que la touche 'r' soit relâchée
+            afficher_menu();
+            return; // Retourne au menu principal
+        }
         rest(1);
     }
 }
