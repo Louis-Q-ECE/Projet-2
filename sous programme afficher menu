@@ -1,0 +1,50 @@
+//
+// Created by Utilisateur on 26/03/2024.
+//
+// Fonction pour fair un menu cliquable
+#include "overck.h"
+void afficher_menu() {
+    clear_to_color(screen, makecol(255, 255, 255));
+    BITMAP* image1 = load_bitmap("image1.bmp", NULL);
+    if (!image1) {
+        allegro_message("impossible de charger l image image1.bmp!");
+        return;
+    }
+    blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    destroy_bitmap(image1);
+
+    // Faire un rectangle pour les regles
+    int regles_x = SCREEN_WIDTH / 2 - 130;
+    int regles_y = 100;
+    rect(screen, regles_x, regles_y, regles_x + 260, regles_y + 50, makecol(0, 0, 0));
+    textout_centre_ex(screen, font, "Appuyez sur 'r' pour les règles.", regles_x + 130, regles_y + 25, makecol(0, 0, 0), -1);
+    // Dans cet exemple, screenest un pointeur vers l'écran actuel, regles_xet regles_y sont les coordonnées x et y du coin supérieur gauche du rectangle
+    // font est un handle vers la police utilisée pour restituer le texte.
+    // La fonction makecol est utilisée pour créer une couleur pour le rectangle et le texte.
+    // La fonction rect est utilisée pour dessiner un rectangle sur l'écran avec les coordonnées et la couleur données.
+    // La fonction textout_centre_ex permet de dessiner la chaîne "Appuyez sur 'r' pour les règles." centré horizontalement et verticalement dans le rectangle.
+    // La position du texte est spécifiée à l'aide des coordonnées regles_x et regles_y, et la couleur est spécifiée à l'aide de la fonction makecol
+
+
+    // Faire un bouton cliquable "jouer"
+    int jouer_x = SCREEN_WIDTH / 2 - 50;
+    int jouer_y = SCREEN_HEIGHT / 2;
+    int jouer_w = 100;
+    int jouer_h = 50;
+    int jouer_color = makecol(0, 0, 255);
+    while (!mouse_b & 1) {
+        rest(1);
+        rect(screen, jouer_x, jouer_y, jouer_x + jouer_w, jouer_y + jouer_h, jouer_color);
+        textout_centre_ex(screen, font, "JOUER", jouer_x + jouer_w / 2, jouer_y + jouer_h / 2, makecol(255, 255, 255), -1);
+
+        // tester si "jouer" est cliquer
+        if (mouse_x >= jouer_x && mouse_x <= jouer_x + jouer_w && mouse_y >= jouer_y && mouse_y <= jouer_y + jouer_h) {
+            jouer_color = makecol(255, 0, 0);
+            if (mouse_b & 1) {
+                break;
+            }
+        } else {
+            jouer_color = makecol(0, 0, 255);
+        }
+    }
+}
