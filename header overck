@@ -1,0 +1,14 @@
+//
+// Created by Utilisateur on 26/03/2024.
+//
+
+#ifndef GIGATEST_OVERCK_H
+#define GIGATEST_OVERCK_H
+
+#endif //GIGATEST_OVERCK_H
+#include <stdio.h>
+#include <allegro.h>
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define GRID_SIZE 40
+#define PLAYER_SIZE 20
