@@ -6,6 +6,7 @@
 #define GRID_SIZE 40
 #define PLAYER_SIZE 20
 #define PLAYER_SPEED 4 // Vitesse de déplacement du joueur
+#define COLOR_CHANGE_INTERVAL 100 // Temporisation de changement de couleur (5 secondes)
 
 BITMAP *imageJ1; // Image du joueur 1
 BITMAP *imageJ2; // Image du joueur 2
@@ -35,15 +36,25 @@ Block movableBlock = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0};
 // Structure pour représenter un bloc lâché
 typedef struct {
     int x, y; // Position du bloc lâché sur le plateau
+    int color; // Couleur du bloc lâché
 } DroppedBlock;
 
 #define MAX_DROPPED_BLOCKS 10 // Nombre maximal de blocs lâchés pouvant être stockés
 DroppedBlock droppedBlocks[MAX_DROPPED_BLOCKS]; // Liste des blocs lâchés
 int numDroppedBlocks = 0; // Nombre actuel de blocs lâchés
 
+int colorChangeTimer = 0; // Timer pour le changement de couleur du cube
+int currentCubeColor; // Déclaration de la variable sans initialisation
+
 int afficher_menu();
 int afficher_regles();
-
+// Fonction pour supprimer le premier bloc lâché
+void supprimer_premier_bloc_lache() {
+    for (int i = 0; i < numDroppedBlocks - 1; i++) {
+        droppedBlocks[i] = droppedBlocks[i + 1];
+    }
+    numDroppedBlocks--;
+}
 int main() {
     // Initialisation
     allegro_init();
@@ -51,7 +62,8 @@ int main() {
     install_mouse();
     set_color_depth(32);
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
-
+    // Initialisez currentCubeColor avec makecol ici
+    currentCubeColor = makecol(255, 255, 0); // Couleur initiale du cube
     // Chargement des images des joueurs
     imageJ1 = load_bitmap("imageJ1.bmp", NULL);
     imageJ2 = load_bitmap("imageJ2.bmp", NULL);
@@ -121,22 +133,30 @@ int main() {
             movableBlock.x = joueur2.grab_x;
             movableBlock.y = joueur2.grab_y;
         }
-
+        // Mettre à jour la position du bloc déplaçable tenu
         // Gérer le lâchement du bloc déplaçable
         if (key[KEY_ENTER]) {
+            if (numDroppedBlocks >= MAX_DROPPED_BLOCKS) {
+                // Supprimer le premier bloc lâché pour faire de la place pour un nouveau bloc
+                supprimer_premier_bloc_lache();
+            }
             if (joueur1.grabbed) {
                 joueur1.grabbed = 0;
                 if (numDroppedBlocks < MAX_DROPPED_BLOCKS) {
+                    // Ajouter le nouveau bloc lâché
                     droppedBlocks[numDroppedBlocks].x = movableBlock.x;
                     droppedBlocks[numDroppedBlocks].y = movableBlock.y;
+                    droppedBlocks[numDroppedBlocks].color = currentCubeColor;
                     numDroppedBlocks++;
                 }
             }
             if (joueur2.grabbed) {
                 joueur2.grabbed = 0;
                 if (numDroppedBlocks < MAX_DROPPED_BLOCKS) {
+                    // Ajouter le nouveau bloc lâché
                     droppedBlocks[numDroppedBlocks].x = movableBlock.x;
                     droppedBlocks[numDroppedBlocks].y = movableBlock.y;
+                    droppedBlocks[numDroppedBlocks].color = currentCubeColor;
                     numDroppedBlocks++;
                 }
             }
@@ -146,6 +166,15 @@ int main() {
         if (!joueur1.grabbed && !joueur2.grabbed) {
             movableBlock.x = staticCube_x - PLAYER_SIZE;
             movableBlock.y = staticCube_y - PLAYER_SIZE;
+        }
+
+        // Incrémenter le timer de changement de couleur
+        colorChangeTimer++;
+        if (colorChangeTimer >= COLOR_CHANGE_INTERVAL) {
+            // Changer la couleur du cube
+            currentCubeColor = makecol(rand() % 256, rand() % 256, rand() % 256);
+            // Réinitialiser le timer
+            colorChangeTimer = 0;
         }
 
         // Dessiner le plateau quadrillé avec des blocs violets sur les extrémités droite et gauche,
@@ -178,11 +207,11 @@ int main() {
 
         // Dessiner les blocs lâchés
         for (int i = 0; i < numDroppedBlocks; i++) {
-            rectfill(buffer, droppedBlocks[i].x, droppedBlocks[i].y, droppedBlocks[i].x + GRID_SIZE, droppedBlocks[i].y + GRID_SIZE, makecol(255, 255, 0)); // Jaune
+            rectfill(buffer, droppedBlocks[i].x, droppedBlocks[i].y, droppedBlocks[i].x + GRID_SIZE, droppedBlocks[i].y + GRID_SIZE, droppedBlocks[i].color); // Utiliser la couleur stockée
         }
 
         // Dessiner le bloc déplaçable
-        rectfill(buffer, movableBlock.x, movableBlock.y, movableBlock.x + GRID_SIZE, movableBlock.y + GRID_SIZE, makecol(255, 255, 0)); // Jaune
+        rectfill(buffer, movableBlock.x, movableBlock.y, movableBlock.x + GRID_SIZE, movableBlock.y + GRID_SIZE, currentCubeColor); // Utiliser la couleur actuelle du cube
 
         // Dessiner les joueurs sur la bitmap temporaire
         draw_sprite(buffer, imageJ1, joueur1.x, joueur1.y);
@@ -204,3 +233,4 @@ int main() {
     return 0;
 }
 END_OF_MAIN()
+
