@@ -1,27 +1,6 @@
 
 #include "bibli.h."
 
-void display_menu() {
-    // Show mouse cursor
-    show_mouse(screen);
-
-    // Clear the screen to white
-    clear_to_color(screen, makecol(255, 255, 255));
-
-    // Load background image
-    BITMAP* image1 = load_bitmap("FE.bmp", NULL);
-    if (!image1) {
-        allegro_message("Unable to load background image");
-        return;
-    }
-    // Draw the background image
-    blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    // Free the memory allocated for the image
-    destroy_bitmap(image1);
-
-  
-// doureuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-void display_menu() {
     show_mouse(screen); // Affiche le curseur de la souris
     clear_to_color(screen, makecol(255, 255, 255)); // Efface l'écran en blanc
 
