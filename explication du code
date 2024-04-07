@@ -68,7 +68,8 @@ afficher_regles() : Fonction pour afficher les règles du jeu.
 supprimer_premier_bloc_lache() : Fonction pour supprimer le premier bloc lâché de la liste.
 
 
-Initialisation d'Allegro et des périphériques
+Initialisation d'Allegro et des périphériques  
+
 
 allegro_init();
 install_keyboard();
