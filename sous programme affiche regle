@@ -35,6 +35,7 @@ void afficher_regles() {
     
     
     // pb : le menu des regles marche bien juste il faut regler le fait qu'il faut m'intenir la touche r
+à cause du getch ????
     while (!key[KEY_ESC]) {
 
         if (key[KEY_R]) {
