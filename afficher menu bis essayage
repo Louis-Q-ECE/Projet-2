@@ -28,16 +28,58 @@ Pourtant, malgré les épreuves, l'humanité a toujours su faire preuve de rési
 
 Aujourd'hui, alors que nous faisons face à des défis mondiaux tels que le changement climatique, la pauvreté et les inégalités, il est plus que jamais crucial de cultiver la solidarité et la coopération entre les nations. En unissant nos forces et en faisant preuve de compassion et de compréhension, nous pouvons surmonter les obstacles qui se dressent sur notre chemin.
 
-Dans cette quête collective pour un avenir meilleur, la science et la technologie jouent un rôle essentiel. Des avancées révolutionnaires dans des domaines tels que la médecine, l'énergie propre et l'intelligence artificielle offrent des opportunités sans précédent pour façonner un monde plus durable et plus équitable.
 
-Cependant, il est crucial de veiller à ce que ces progrès technologiques soient utilisés de manière éthique et responsable, afin de préserver la dignité humaine et de prévenir les conséquences néfastes pour notre planète et ses habitants.
+#include "bibli.h."
 
-En fin de compte, que nous soyons des explorateurs spatiaux, des artistes inspirés, des scientifiques visionnaires ou simplement des êtres humains cherchant leur place dans l'univers, nous sommes tous liés par notre humanité commune et notre désir de créer un monde où chacun peut s'épanouir et trouver le bonheur.
+void display_menu() {
+    show_mouse(screen); // Affiche le curseur de la souris
+    clear_to_color(screen, makecol(255, 255, 255)); // Efface l'écran en blanc
 
-Dans les profondeurs de l'espace infini, sur la surface de notre belle planète, dans les recoins les plus reculés de notre imagination, l'aventure de l'humanité continue, pleine de promesses et de possibilités infinies.
+    BITMAP* background = load_bitmap("FE.bmp", NULL); // Charge l'image de fond
+    if (!background) {
+        allegro_message("Unable to load background image"); // Affiche un message d'erreur si le chargement de l'image échoue
+        return;
+    }
+    blit(background, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // Affiche l'image de fond
+    destroy_bitmap(background); // Libère la mémoire allouée pour l'image
 
+    // Dessine un rectangle pour les règles
+    int rules_x = SCREEN_WIDTH / 2 - 130;
+    int rules_y = 100;
+    rect(screen, rules_x, rules_y, rules_x + 260, rules_y + 50, makecol(0, 0, 0));
+    textout_centre_ex(screen, font, "Press 'r' for rules.", rules_x + 130, rules_y + 25, makecol(0, 0, 0), -1);
 
+    // Crée un bouton cliquable "Jouer"
+    int play_x = SCREEN_WIDTH / 2 - 50;
+    int play_y = SCREEN_HEIGHT / 2;
+    int play_w = 100;
+    int play_h = 50;
+    int play_color = makecol(0, 0, 255);
 
+    while (!mouse_b & 1) {
+        rest(1);
+        rect(screen, play_x, play_y, play_x + play_w, play_y + play_h, play_color); // Dessine le bouton "Jouer"
+        textout_centre_ex(screen, font, "PLAY", play_x + play_w / 2, play_y + play_h / 2, makecol(255, 255, 255), -1);
+
+        // Vérifie si le bouton "Jouer" est cliqué
+        if (mouse_x >= play_x && mouse_x <= play_x + play_w && mouse_y >= play_y && mouse_y <= play_y + play_h) {
+            play_color = makecol(255, 0, 0);
+            if (mouse_b & 1) {
+                break;
+            }
+        } else {
+            play_color = makecol(0, 0, 255);
+        }
+
+        // Vérifie si la touche 'r' est pressée pour afficher les règles
+        if (key[KEY_R]) {
+            display_rules();
+            clear_keybuf();
+        }
+    }
+
+    show_mouse(NULL); // Cache le curseur de la souris
+}
 
 
 
