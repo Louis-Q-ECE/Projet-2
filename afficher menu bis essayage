@@ -1,20 +1,7 @@
 
 #include "bibli.h."
 
-    show_mouse(screen); // Affiche le curseur de la souris
-    clear_to_color(screen, makecol(255, 255, 255)); // Efface l'écran en blanc
-
-    BITMAP* background = load_bitmap("FE.bmp", NULL); // Charge l'image de fond
-    if (!background) {
-        allegro_message("Unable to load background image"); // Affiche un message d'erreur si le chargement de l'image échoue
-        return;
-    }
-    blit(background, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // Affiche l'image de fond
-    destroy_bitmap(background); // Libère la mémoire allouée pour l'image
-
-    // Dessine un rectangle pour les règles
-    int rules_x = SCREEN_WIDTH / 2 - 130;
-    int rules_y = 100;
+    sho
     rect(screen, rules_x, rules_y, rules_x + 260, rules_y + 50, makecol(0, 0, 0));
     textout_centre_ex(screen, font, "Press 'r' for rules.", rules_x + 130, rules_y + 25, makecol(0, 0, 0), -1);
 
