@@ -23,7 +23,7 @@ int afficher_menu();
 int afficher_regles();
 
 int main() {
-    // Initialisation
+    // Initialisation/////////////
     allegro_init();
     install_keyboard();
     install_mouse();
