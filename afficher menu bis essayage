@@ -12,22 +12,6 @@
 
     show_mouse(NULL); // Cache le curseur de la souris
 }
-Bien sûr, voici un texte de 50 lignes :
-
-Dans l'immensité du cosmos, des milliards de galaxies tournoient dans une danse cosmique infinie. Parmi ces galaxies, la Voie lactée brille de tous ses feux, abritant notre modeste système solaire. Au sein de ce système solaire, la Terre, notre foyer, orbite autour du Soleil, berceau de vie et de merveilles.
-
-Sur cette planète bleue, une symphonie de vie s'épanouit dans une diversité étonnante. Des forêts luxuriantes aux déserts arides, des océans tumultueux aux sommets enneigés, la Terre est le théâtre d'une multitude de paysages à couper le souffle.
-
-Au cœur de cette nature majestueuse, l'humanité trace son chemin, tissant des récits et des légendes à travers les âges. De l'aube des temps préhistoriques aux sommets de la civilisation moderne, l'histoire de l'humanité est un voyage épique marqué par des hauts et des bas, des conquêtes et des défis.
-
-Les civilisations anciennes ont laissé derrière elles des vestiges énigmatiques qui continuent de fasciner et d'inspirer les chercheurs et les explorateurs. Des pyramides de Gizeh à Stonehenge, des temples d'Angkor Wat aux cités perdues des Incas, ces monuments témoignent de la grandeur et de la créativité des peuples anciens.
-
-Mais l'histoire de l'humanité est aussi faite de conflits et de bouleversements. Des guerres antiques aux conflits modernes, la quête du pouvoir et de la domination a souvent engendré des tragédies et des souffrances incommensurables.
-
-Pourtant, malgré les épreuves, l'humanité a toujours su faire preuve de résilience et d'espoir. Des mouvements de résistance aux actions humanitaires, de nombreux héros ont émergé pour défendre la justice et la dignité humaine.
-
-Aujourd'hui, alors que nous faisons face à des défis mondiaux tels que le changement climatique, la pauvreté et les inégalités, il est plus que jamais crucial de cultiver la solidarité et la coopération entre les nations. En unissant nos forces et en faisant preuve de compassion et de compréhension, nous pouvons surmonter les obstacles qui se dressent sur notre chemin.
-
 
 #include "bibli.h."
 
@@ -80,6 +64,56 @@ void display_menu() {
 
     show_mouse(NULL); // Cache le curseur de la souris
 }
+
+Bien sûr, voici un texte de 50 lignes :
+
+Dans l'immensité du cosmos, des milliards de galaxies tournoient dans une danse cosmique infinie. Parmi ces galaxies, la Voie lactée brille de tous ses feux, abritant notre modeste système solaire. Au sein de ce système solaire, la Terre, notre foyer, orbite autour du Soleil, berceau de vie et de merveilles.
+
+Sur cette planète bleue, une symphonie de vie s'épanouit dans une diversité étonnante. Des forêts luxuriantes aux déserts arides, des océans tumultueux aux sommets enneigés, la Terre est le théâtre d'une multitude de paysages à couper le souffle.
+
+Au cœur de cette nature majestueuse, l'humanité trace son chemin, tissant des récits et des légendes à travers les âges. De l'aube des temps préhistoriques aux sommets de la civilisation moderne, l'histoire de l'humanité est un voyage épique marqué par des hauts et des bas, des conquêtes et des défis.
+
+Les civilisations anciennes ont laissé derrière elles des vestiges énigmatiques qui continuent de fasciner et d'inspirer les chercheurs et les explorateurs. Des pyramides de Gizeh à Stonehenge, des temples d'Angkor Wat aux cités perdues des Incas, ces monuments témoignent de la grandeur et de la créativité des peuples anciens.
+
+Mais l'histoire de l'humanité est aussi faite de conflits et de bouleversements. Des guerres antiques aux conflits modernes, la quête du pouvoir et de la domination a souvent engendré des tragédies et des souffrances incommensurables.
+
+Pourtant, malgré les épreuves, l'humanité a toujours su faire preuve de résilience et d'espoir. Des mouvements de résistance aux actions humanitaires, de nombreux héros ont émergé pour défendre la justice et la dignité humaine.
+
+Aujourd'hui, alors que nous faisons face à des défis mondiaux tels que le changement climatique, la pauvreté et les inégalités, il est plus que jamais crucial de cultiver la solidarité et la coopération entre les nations. En unissant nos forces et en faisant preuve de compassion et de compréhension, nous pouvons surmonter les obstacles qui se dressent sur notre chemin.
+
+Bien sûr, voici un texte de 50 lignes :
+
+Dans l'immensité du cosmos, des milliards de galaxies tournoient dans une danse cosmique infinie. Parmi ces galaxies, la Voie lactée brille de tous ses feux, abritant notre modeste système solaire. Au sein de ce système solaire, la Terre, notre foyer, orbite autour du Soleil, berceau de vie et de merveilles.
+
+Sur cette planète bleue, une symphonie de vie s'épanouit dans une diversité étonnante. Des forêts luxuriantes aux déserts arides, des océans tumultueux aux sommets enneigés, la Terre est le théâtre d'une multitude de paysages à couper le souffle.
+
+Au cœur de cette nature majestueuse, l'humanité trace son chemin, tissant des récits et des légendes à travers les âges. De l'aube des temps préhistoriques aux sommets de la civilisation moderne, l'histoire de l'humanité est un voyage épique marqué par des hauts et des bas, des conquêtes et des défis.
+
+Les civilisations anciennes ont laissé derrière elles des vestiges énigmatiques qui continuent de fasciner et d'inspirer les chercheurs et les explorateurs. Des pyramides de Gizeh à Stonehenge, des temples d'Angkor Wat aux cités perdues des Incas, ces monuments témoignent de la grandeur et de la créativité des peuples anciens.
+
+Mais l'histoire de l'humanité est aussi faite de conflits et de bouleversements. Des guerres antiques aux conflits modernes, la quête du pouvoir et de la domination a souvent engendré des tragédies et des souffrances incommensurables.
+
+Pourtant, malgré les épreuves, l'humanité a toujours su faire preuve de résilience et d'espoir. Des mouvements de résistance aux actions humanitaires, de nombreux héros ont émergé pour défendre la justice et la dignité humaine.
+
+Aujourd'hui, alors que nous faisons face à des défis mondiaux tels que le changement climatique, la pauvreté et les inégalités, il est plus que jamais crucial de cultiver la solidarité et la coopération entre les nations. En unissant nos forces et en faisant preuve de compassion et de compréhension, nous pouvons surmonter les obstacles qui se dressent sur notre chemin.
+
+Bien sûr, voici un texte de 50 lignes :
+
+Dans l'immensité du cosmos, des milliards de galaxies tournoient dans une danse cosmique infinie. Parmi ces galaxies, la Voie lactée brille de tous ses feux, abritant notre modeste système solaire. Au sein de ce système solaire, la Terre, notre foyer, orbite autour du Soleil, berceau de vie et de merveilles.
+
+Sur cette planète bleue, une symphonie de vie s'épanouit dans une diversité étonnante. Des forêts luxuriantes aux déserts arides, des océans tumultueux aux sommets enneigés, la Terre est le théâtre d'une multitude de paysages à couper le souffle.
+
+Au cœur de cette nature majestueuse, l'humanité trace son chemin, tissant des récits et des légendes à travers les âges. De l'aube des temps préhistoriques aux sommets de la civilisation moderne, l'histoire de l'humanité est un voyage épique marqué par des hauts et des bas, des conquêtes et des défis.
+
+Les civilisations anciennes ont laissé derrière elles des vestiges énigmatiques qui continuent de fasciner et d'inspirer les chercheurs et les explorateurs. Des pyramides de Gizeh à Stonehenge, des temples d'Angkor Wat aux cités perdues des Incas, ces monuments témoignent de la grandeur et de la créativité des peuples anciens.
+
+Mais l'histoire de l'humanité est aussi faite de conflits et de bouleversements. Des guerres antiques aux conflits modernes, la quête du pouvoir et de la domination a souvent engendré des tragédies et des souffrances incommensurables.
+
+Pourtant, malgré les épreuves, l'humanité a toujours su faire preuve de résilience et d'espoir. Des mouvements de résistance aux actions humanitaires, de nombreux héros ont émergé pour défendre la justice et la dignité humaine.
+
+Aujourd'hui, alors que nous faisons face à des défis mondiaux tels que le changement climatique, la pauvreté et les inégalités, il est plus que jamais crucial de cultiver la solidarité et la coopération entre les nations. En unissant nos forces et en faisant preuve de compassion et de compréhension, nous pouvons surmonter les obstacles qui se dressent sur notre chemin.
+
+
 
 
 
