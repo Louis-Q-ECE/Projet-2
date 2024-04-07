@@ -11,7 +11,7 @@ void afficher_menu() {
     blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     destroy_bitmap(image1);
 
-    // Faire un rectangle pour les regles
+    // mettre un les règles dans un rectangle
     int regles_x = SCREEN_WIDTH / 2 - 130;
     int regles_y = 100;
     rect(screen, regles_x, regles_y, regles_x + 260, regles_y + 50, makecol(0, 0, 0));
@@ -35,7 +35,7 @@ void afficher_menu() {
         rect(screen, jouer_x, jouer_y, jouer_x + jouer_w, jouer_y + jouer_h, jouer_color);
         textout_centre_ex(screen, font, "JOUER", jouer_x + jouer_w / 2, jouer_y + jouer_h / 2, makecol(255, 255, 255), -1);
 
-        // tester si "jouer" est cliquer
+        //pour tester si "jouer" est cliquer
         if (mouse_x >= jouer_x && mouse_x <= jouer_x + jouer_w && mouse_y >= jouer_y && mouse_y <= jouer_y + jouer_h) {
             jouer_color = makecol(255, 0, 0);
             if (mouse_b & 1) {
