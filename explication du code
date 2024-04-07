@@ -1,0 +1,125 @@
+explication du code afficher_regles :
+#include "overck.h" : Cette ligne inclut le fichier d'en-tête "overck.h", qui peut contenir des déclarations de fonctions, des définitions de constantes ou d'autres éléments nécessaires à ce module.
+
+void afficher_regles() { : Ceci est la signature de la fonction afficher_regles(), qui indique qu'elle ne retourne aucune valeur (void). La fonction est définie ici.
+
+clear_to_color(screen, makecol(255, 255, 255)); : Cette instruction efface l'écran en le remplissant avec la couleur spécifiée (blanc dans ce cas).
+Cela garantit qu'il n'y a pas de contenu précédent affiché lorsque les règles sont affichées.
+
+BITMAP* image2 = load_bitmap("image2.bmp", NULL); : Cette ligne charge une image à partir d'un fichier bitmap nommé "image2.bmp" dans la variable image2. La fonction load_bitmap est utilisée pour cela.
+
+if (!image2) { allegro_message("impossible de charger l image2.bmp!"); return; } : Cette condition vérifie si le chargement de l'image a réussi. 
+Si image2 est NULL, cela signifie que le chargement a échoué.Dans ce cas, un message d'erreur est affiché avec allegro_message, et la fonction se termine en retournant immédiatement.
+
+blit(image2, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); : Cette instruction copie l'image chargée (image2) sur l'écran (screen). Cela affiche l'image à l'écran.
+
+destroy_bitmap(image2); : Cette instruction libère la mémoire utilisée par l'image chargée, évitant ainsi les fuites de mémoire.
+
+while (!key[KEY_ESC] && !key[KEY_R]) { rest(1); } : Cette boucle vide attend que l'utilisateur appuie sur la touche "ESC" ou "R". 
+Cela permet à l'utilisateur de quitter l'affichage des règles en appuyant sur la touche "ESC" ou de revenir au jeu en appuyant sur la touche "R".
+La fonction rest(1) est utilisée pour faire une pause d'une milliseconde à chaque itération de la boucle, évitant ainsi une utilisation excessive du processeur.
+
+explication du code afficher_menu :
+
+void afficher_menu() { : Déclaration de la fonction afficher_menu(). La fonction ne retourne aucune valeur (void) et ne prend aucun argument.
+
+clear_to_color(screen, makecol(255, 255, 255)); : Cette instruction efface l'écran en le remplissant avec la couleur spécifiée (blanc dans ce cas).
+
+BITMAP* image1 = load_bitmap("image1.bmp", NULL); : Charge une image à partir d'un fichier bitmap nommé "image1.bmp" dans la variable image1.
+
+if (!image1) { allegro_message("impossible de charger l image image1.bmp!"); return; } : Vérifie si le chargement de l'image a échoué. Si oui, affiche un message d'erreur et retourne immédiatement.
+
+blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); : Copie l'image chargée (image1) sur l'écran (screen). Cela affiche l'image à l'écran.
+
+destroy_bitmap(image1); : Libère la mémoire utilisée par l'image chargée.
+
+Ensuite, le code dessine deux éléments du menu :
+
+Un rectangle avec le texte "Appuyez sur 'r' pour les règles." au centre. Cela permet à l'utilisateur d'accéder aux règles du jeu en appuyant sur la touche "r".
+Un bouton "JOUER" cliquable au centre de l'écran. Lorsque l'utilisateur clique sur ce bouton, le programme sort de la boucle et passe à l'étape suivante du jeu.
+En résumé, cette fonction afficher_menu() affiche un menu à l'écran où l'utilisateur peut choisir d'accéder aux règles du jeu ou de commencer à jouer.
+
+
+explication du code main 
+
+
+Ce code est un programme écrit en langage C utilisant la bibliothèque Allegro pour créer un jeu simple avec des éléments graphiques. Voici une explication détaillée de chaque partie du code :
+
+Inclusions de bibliothèques et définitions de constantes
+#include <stdio.h> : Inclut la bibliothèque standard d'entrées/sorties.
+#include <allegro.h> : Inclut la bibliothèque Allegro nécessaire pour la programmation graphique.
+Les directives #define définissent plusieurs constantes utilisées dans le programme,telles que la largeur de l'écran, la hauteur de l'écran, la taille de la grille, la taille du joueur, la vitesse du joueur
+Définition de structures
+Player : Une structure qui représente un joueur sur le plateau de jeu. 
+Elle contient les coordonnées (x, y) du joueur, ainsi que des indicateurs pour savoir s'il a attrapé un bloc et la position du bloc qu'il a attrapé.
+Block : Une structure qui représente un bloc déplaçable sur le plateau. Elle contient les coordonnées (x, y) du bloc et un indicateur pour savoir s'il est actuellement attrapé par un joueur.
+DroppedBlock : Une structure qui représente un bloc lâché sur le plateau. Elle contient les coordonnées (x, y) du bloc lâché et sa couleur.
+Initialisation des variables
+joueur1 et joueur2 : Initialisent les deux joueurs avec leurs positions initiales et d'autres paramètres.
+staticCube_x et staticCube_y : Initialisent les coordonnées du bloc statique sur le plateau.
+movableBlock : Initialise le bloc déplaçable avec sa position initiale.
+droppedBlocks : Un tableau pour stocker les blocs lâchés.
+numDroppedBlocks : Le nombre actuel de blocs lâchés.
+colorChangeTimer : Un compteur pour gérer le changement de couleur du bloc déplaçable.
+currentCubeColor : La couleur actuelle du bloc déplaçable.
+Fonctions
+afficher_menu() : Fonction pour afficher un menu cliquable.
+afficher_regles() : Fonction pour afficher les règles du jeu.
+supprimer_premier_bloc_lache() : Fonction pour supprimer le premier bloc lâché de la liste.
+
+
+Initialisation d'Allegro et des périphériques
+
+allegro_init();
+install_keyboard();
+install_mouse();
+set_color_depth(32);
+set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+allegro_init(): Initialise Allegro, une bibliothèque de programmation de jeux vidéo.
+install_keyboard(): Initialise le clavier pour capturer les entrées.
+install_mouse(): Initialise la souris pour capturer les entrées.
+set_color_depth(32): Configure la profondeur des couleurs à 32 bits, permettant une large gamme de couleurs.
+set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0): Définit le mode graphique en mode fenêtré avec une résolution spécifiée par SCREEN_WIDTH et SCREEN_HEIGHT.
+Chargement des images des joueurs
+
+
+imageJ1 = load_bitmap("imageJ1.bmp", NULL);
+imageJ2 = load_bitmap("imageJ2.bmp", NULL);
+Charge les images des joueurs à partir des fichiers bitmap spécifiés.
+
+Affichage du menu
+
+afficher_menu();
+Appelle la fonction afficher_menu() pour afficher le menu cliquable avec une image.
+
+Création d'une bitmap temporaire pour le double tampon
+
+BITMAP *buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+Crée une bitmap temporaire de la taille de l'écran pour effectuer un rendu en double tampon, ce qui permet d'éviter le clignotement de l'affichage.
+
+Boucle principale du jeu
+
+while (!key[KEY_ESC]) {
+    // Gestion des événements...
+    // Dessin des éléments du jeu...
+    // Attente pour limiter la vitesse de déplacement...
+}
+La boucle continue tant que la touche ESC n'est pas enfoncée.
+
+Gestion des événements
+La boucle gère les événements tels que les mouvements des joueurs, l'attrapage et le lâchage du bloc déplaçable, et l'affichage des règles du jeu en réponse aux entrées du clavier.
+Dessin des éléments du jeu
+Dessine les éléments du jeu tels que le plateau, les joueurs, les blocs lâchés et le bloc déplaçable sur la bitmap temporaire.
+Attente pour limiter la vitesse de déplacement
+La fonction rest(5) est utilisée pour limiter la vitesse de déplacement du jeu en attendant 5 millisecondes à chaque itération de la boucle.
+
+Libération des ressources et sortie du programme
+
+destroy_bitmap(buffer);
+destroy_bitmap(imageJ1);
+destroy_bitmap(imageJ2);
+allegro_exit();
+Libère les ressources utilisées par la bitmap temporaire et les images des joueurs.
+Effectue la sortie propre d'Allegro.
+
+
