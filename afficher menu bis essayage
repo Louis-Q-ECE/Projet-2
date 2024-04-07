@@ -19,13 +19,27 @@ void display_menu() {
     // Free the memory allocated for the image
     destroy_bitmap(image1);
 
-    // Draw rules inside a rectangle
+  
+
+void display_menu() {
+    show_mouse(screen); // Affiche le curseur de la souris
+    clear_to_color(screen, makecol(255, 255, 255)); // Efface l'écran en blanc
+
+    BITMAP* background = load_bitmap("FE.bmp", NULL); // Charge l'image de fond
+    if (!background) {
+        allegro_message("Unable to load background image"); // Affiche un message d'erreur si le chargement de l'image échoue
+        return;
+    }
+    blit(background, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // Affiche l'image de fond
+    destroy_bitmap(background); // Libère la mémoire allouée pour l'image
+
+    // Dessine un rectangle pour les règles
     int rules_x = SCREEN_WIDTH / 2 - 130;
     int rules_y = 100;
     rect(screen, rules_x, rules_y, rules_x + 260, rules_y + 50, makecol(0, 0, 0));
     textout_centre_ex(screen, font, "Press 'r' for rules.", rules_x + 130, rules_y + 25, makecol(0, 0, 0), -1);
 
-    // Create a clickable button "play"
+    // Crée un bouton cliquable "Jouer"
     int play_x = SCREEN_WIDTH / 2 - 50;
     int play_y = SCREEN_HEIGHT / 2;
     int play_w = 100;
@@ -34,11 +48,10 @@ void display_menu() {
 
     while (!mouse_b & 1) {
         rest(1);
-        // Draw the play button
-        rect(screen, play_x, play_y, play_x + play_w, play_y + play_h, play_color);
+        rect(screen, play_x, play_y, play_x + play_w, play_y + play_h, play_color); // Dessine le bouton "Jouer"
         textout_centre_ex(screen, font, "PLAY", play_x + play_w / 2, play_y + play_h / 2, makecol(255, 255, 255), -1);
 
-        // Check if the "play" button is clicked
+        // Vérifie si le bouton "Jouer" est cliqué
         if (mouse_x >= play_x && mouse_x <= play_x + play_w && mouse_y >= play_y && mouse_y <= play_y + play_h) {
             play_color = makecol(255, 0, 0);
             if (mouse_b & 1) {
@@ -48,13 +61,12 @@ void display_menu() {
             play_color = makecol(0, 0, 255);
         }
 
-        // Check if 'r' key is pressed for rules
+        // Vérifie si la touche 'r' est pressée pour afficher les règles
         if (key[KEY_R]) {
             display_rules();
             clear_keybuf();
         }
     }
 
-    // Hide mouse cursor
-    show_mouse(NULL);
+    show_mouse(NULL); // Cache le curseur de la souris
 }
