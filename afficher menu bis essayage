@@ -1,16 +1,7 @@
 
 #include "bibli.h."
 
-    sho
-    rect(screen, rules_x, rules_y, rules_x + 260, rules_y + 50, makecol(0, 0, 0));
-    textout_centre_ex(screen, font, "Press 'r' for rules.", rules_x + 130, rules_y + 25, makecol(0, 0, 0), -1);
-
-    // Crée un bouton cliquable "Jouer"
-    int play_x = SCREEN_WIDTH / 2 - 50;
-    int play_y = SCREEN_HEIGHT / 2;
-    int play_w = 100;
-    int play_h = 50;
-    int play_color = makecol(0, 0, 255);
+    
 
     while (!mouse_b & 1) {
         rest(1);
