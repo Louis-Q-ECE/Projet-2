@@ -15,7 +15,7 @@ typedef struct {
     int x, y; // Position des joueurs sur le plateau
 } Player;
 
-// Initialiser les joueurs
+// Initialiser les joueurs sur le plateau 
 Player joueur1 = {GRID_SIZE, GRID_SIZE};
 Player joueur2 = {SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE, SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE};
 
@@ -23,7 +23,7 @@ int afficher_menu();
 int afficher_regles();
 
 int main() {
-    // Initialisation/////////////
+    // Initialisation des commandes de déplacement
     allegro_init();
     install_keyboard();
     install_mouse();
@@ -34,13 +34,13 @@ int main() {
     imageJ1 = load_bitmap("imageJ1.bmp", NULL);
     imageJ2 = load_bitmap("imageJ2.bmp", NULL);
 
-    // Afficher le menu cliquable avec l'image
+    // Afficher le menu cliquable avec la souris 
     afficher_menu();
 
     // Création d'une bitmap temporaire pour le double tampon
     BITMAP *buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    // Boucle de jeu
+    // Boucle qui affiche le jeu
     while (!key[KEY_ESC]) {
         // Si la touche 'r' est enfoncée, afficher les règles
         if (key[KEY_R]) {
@@ -60,12 +60,14 @@ int main() {
         if (key[KEY_LEFT]) joueur2.x -= PLAYER_SPEED;
         if (key[KEY_RIGHT]) joueur2.x += PLAYER_SPEED;
 
-        // Limiter la position des joueurs dans les limites du plateau
+        // Délimiter la position des joueurs dans les limites du plateau
+
+        //joueur 1
         if (joueur1.x < GRID_SIZE) joueur1.x = GRID_SIZE;
         if (joueur1.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur1.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
         if (joueur1.y < GRID_SIZE) joueur1.y = GRID_SIZE;
         if (joueur1.y >= SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE) joueur1.y = SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE;
-
+        //joueur 2
         if (joueur2.x < GRID_SIZE) joueur2.x = GRID_SIZE;
         if (joueur2.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur2.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
         if (joueur2.y < GRID_SIZE) joueur2.y = GRID_SIZE;
