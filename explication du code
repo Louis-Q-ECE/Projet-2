@@ -1,3 +1,5 @@
+
+
 explication du code afficher_regles :
 #include "overck.h" : Cette ligne inclut le fichier d'en-tête "overck.h", qui peut contenir des déclarations de fonctions, des définitions de constantes ou d'autres éléments nécessaires à ce module.
 
