@@ -1,1 +1,60 @@
 
+#include "bibli.h."
+
+void display_menu() {
+    // Show mouse cursor
+    show_mouse(screen);
+
+    // Clear the screen to white
+    clear_to_color(screen, makecol(255, 255, 255));
+
+    // Load background image
+    BITMAP* image1 = load_bitmap("FE.bmp", NULL);
+    if (!image1) {
+        allegro_message("Unable to load background image");
+        return;
+    }
+    // Draw the background image
+    blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Free the memory allocated for the image
+    destroy_bitmap(image1);
+
+    // Draw rules inside a rectangle
+    int rules_x = SCREEN_WIDTH / 2 - 130;
+    int rules_y = 100;
+    rect(screen, rules_x, rules_y, rules_x + 260, rules_y + 50, makecol(0, 0, 0));
+    textout_centre_ex(screen, font, "Press 'r' for rules.", rules_x + 130, rules_y + 25, makecol(0, 0, 0), -1);
+
+    // Create a clickable button "play"
+    int play_x = SCREEN_WIDTH / 2 - 50;
+    int play_y = SCREEN_HEIGHT / 2;
+    int play_w = 100;
+    int play_h = 50;
+    int play_color = makecol(0, 0, 255);
+
+    while (!mouse_b & 1) {
+        rest(1);
+        // Draw the play button
+        rect(screen, play_x, play_y, play_x + play_w, play_y + play_h, play_color);
+        textout_centre_ex(screen, font, "PLAY", play_x + play_w / 2, play_y + play_h / 2, makecol(255, 255, 255), -1);
+
+        // Check if the "play" button is clicked
+        if (mouse_x >= play_x && mouse_x <= play_x + play_w && mouse_y >= play_y && mouse_y <= play_y + play_h) {
+            play_color = makecol(255, 0, 0);
+            if (mouse_b & 1) {
+                break;
+            }
+        } else {
+            play_color = makecol(0, 0, 255);
+        }
+
+        // Check if 'r' key is pressed for rules
+        if (key[KEY_R]) {
+            display_rules();
+            clear_keybuf();
+        }
+    }
+
+    // Hide mouse cursor
+    show_mouse(NULL);
+}
