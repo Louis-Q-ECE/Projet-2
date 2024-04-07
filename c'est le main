@@ -22,6 +22,7 @@ Player joueur2 = {SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE, SCREEN_HEIGHT - GRID_S
 int afficher_menu();
 int afficher_regles();
 
+
 int main() {
     // Initialisation des commandes de déplacement
     allegro_init();
@@ -53,6 +54,7 @@ int main() {
         if (key[KEY_S]) joueur1.y += PLAYER_SPEED;
         if (key[KEY_A]) joueur1.x -= PLAYER_SPEED;
         if (key[KEY_D]) joueur1.x += PLAYER_SPEED;
+
 
         // Gestion des mouvements du joueur 2
         if (key[KEY_UP]) joueur2.y -= PLAYER_SPEED;
