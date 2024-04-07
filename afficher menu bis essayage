@@ -3,21 +3,6 @@
 
     
 
-    while (!mouse_b & 1) {
-        rest(1);
-        rect(screen, play_x, play_y, play_x + play_w, play_y + play_h, play_color); // Dessine le bouton "Jouer"
-        textout_centre_ex(screen, font, "PLAY", play_x + play_w / 2, play_y + play_h / 2, makecol(255, 255, 255), -1);
-
-        // Vérifie si le bouton "Jouer" est cliqué
-        if (mouse_x >= play_x && mouse_x <= play_x + play_w && mouse_y >= play_y && mouse_y <= play_y + play_h) {
-            play_color = makecol(255, 0, 0);
-            if (mouse_b & 1) {
-                break;
-            }
-        } else {
-            play_color = makecol(0, 0, 255);
-        }
-
         // Vérifie si la touche 'r' est pressée pour afficher les règles
         if (key[KEY_R]) {
             display_rules();
