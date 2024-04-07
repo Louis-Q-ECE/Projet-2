@@ -186,7 +186,7 @@ int main() {
                 if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
                     rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(255, 0, 255)); // Violet
                 }
-                    // Dessiner des bords verts sur les extrémités hautes et basses
+                    // Dessiner des bords verts sur les extrémités hautes et basses de la map
                 else if (y == 0 || y == SCREEN_HEIGHT - GRID_SIZE) {
                     rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 255, 0)); // Vert
                 }
@@ -194,7 +194,7 @@ int main() {
                     rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(192, 192, 192)); // Gris pour le reste du plateau
                 }
 
-                // Dessiner une bordure noire autour de chaque bloc vert
+                // Dessiner une bordure noire autour des blocs verts
                 if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
                     rect(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 0, 0));
                 }
