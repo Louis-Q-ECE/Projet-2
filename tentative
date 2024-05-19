@@ -1,107 +1,671 @@
-// fonction pour faire un menu cliquable
-#include "overck.h"
-#include <stdbool.h> // Inclure stdbool.h pour utiliser true et false
+#include <stdio.h>
+#include <allegro.h>
 
-// Fonction pour afficher les commandes
-void afficher_commandes() {
-    clear_to_color(screen, makecol(255, 255, 255));
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define GRID_SIZE 40
+#define PLAYER_SIZE 20
+#define PLAYER_SPEED 3 // Vitesse de déplacement des joueurs
 
-    textout_centre_ex(screen, font, "Commandes du jeu:", SCREEN_WIDTH / 2, 30, makecol(0, 0, 0), -1);
+BITMAP *imageJ1; // Image du joueur 1
+BITMAP *imageJ2; // Image du joueur 2
+BITMAP *imageBloc1;
+BITMAP *imageBloc2;
+BITMAP *imageBloc3;
+BITMAP *imageBloc4;
+BITMAP *imageBloc5;
+BITMAP *imageSauceTomate;
+BITMAP *imageFour;
 
-    // Commandes du joueur 1
-    textout_centre_ex(screen, font, "Joueur 1:", SCREEN_WIDTH / 2, 60, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "Z - Avancer", SCREEN_WIDTH / 2, 90, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "S - Reculer", SCREEN_WIDTH / 2, 120, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "Q - Gauche", SCREEN_WIDTH / 2, 150, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "D - Droite", SCREEN_WIDTH / 2, 180, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "T - Lacher", SCREEN_WIDTH / 2, 210, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "E - Attraper", SCREEN_WIDTH / 2, 240, makecol(0, 0, 0), -1);
 
-    // Commandes du joueur 2
-    textout_centre_ex(screen, font, "Joueur 2:", SCREEN_WIDTH / 2, 270, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "fleche haute - Avancer", SCREEN_WIDTH / 2, 300, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "fleche bas - Reculer", SCREEN_WIDTH / 2, 330, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "fleche gauche - Gauche", SCREEN_WIDTH / 2, 360, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "fleche droite - Droite", SCREEN_WIDTH / 2, 390, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "J - Attraper", SCREEN_WIDTH / 2, 420, makecol(0, 0, 0), -1);
-    textout_centre_ex(screen, font, "L - Lacher", SCREEN_WIDTH / 2, 450, makecol(0, 0, 0), -1);
+// Structure pour représenter les joueurs
+typedef struct {
+    int x, y; // Position des joueurs sur le plateau
+    int grabbed; // Indicateur pour savoir si le joueur a attrapé un bloc
+    int grab_x, grab_y; // Position du bloc attrapé par le joueur
+} Player;
 
-    textout_centre_ex(screen, font, "ECHAP - Retour au menu", SCREEN_WIDTH / 2, 480, makecol(0, 0, 0), -1);
+// Structure pour représenter le bloc déplaçable
+typedef struct {
+    int x, y; // Position du bloc sur le plateau
+    int grabbed; // Indicateur pour savoir si le bloc est attrapé
+    int type; // Type de bloc (1 pour bloc1, 2 pour bloc2, 3 pour bloc3, etc.)
+} Block;
 
-    while (true) {
-        if (key[KEY_ESC]) {
-            break;
+// Initialiser les joueurs
+Player joueur1 = {GRID_SIZE, GRID_SIZE, 0, 0};
+Player joueur2 = {SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE, SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE, 0, 0};
+
+// Définition des tableaux de blocs
+#define MAX_BLOCKS 5
+Block bloc1[MAX_BLOCKS];
+Block bloc2[MAX_BLOCKS];
+Block bloc3[MAX_BLOCKS];
+Block bloc4[MAX_BLOCKS];
+Block bloc5[MAX_BLOCKS];
+Block saucetomate[MAX_BLOCKS];
+int numBlocs1 = MAX_BLOCKS; // Nombre de blocs 1 disponibles
+int numBlocs2 = MAX_BLOCKS; // Nombre de blocs 2 disponibles
+int numBlocs3 = MAX_BLOCKS;
+int numBlocs4 = MAX_BLOCKS;
+int numBlocs5 = MAX_BLOCKS;
+int numSauceTomate = MAX_BLOCKS;
+
+// Initialisation des positions initiales des blocs
+int bloc1_initial_x[MAX_BLOCKS] = {GRID_SIZE, GRID_SIZE + GRID_SIZE, GRID_SIZE + GRID_SIZE * 2, GRID_SIZE + GRID_SIZE * 3, GRID_SIZE + GRID_SIZE * 4};
+int bloc1_initial_y = GRID_SIZE;
+int bloc2_initial_x[MAX_BLOCKS] = {SCREEN_WIDTH - GRID_SIZE * 2, SCREEN_WIDTH - GRID_SIZE * 4, SCREEN_WIDTH - GRID_SIZE * 5, SCREEN_WIDTH - GRID_SIZE * 6, SCREEN_WIDTH - GRID_SIZE * 7};
+int bloc2_initial_y = GRID_SIZE+10;
+int bloc3_initial_x[MAX_BLOCKS] = {GRID_SIZE, GRID_SIZE + GRID_SIZE, GRID_SIZE + GRID_SIZE * 2, GRID_SIZE + GRID_SIZE * 3, GRID_SIZE + GRID_SIZE * 4};
+int bloc3_initial_y = GRID_SIZE+50;
+int bloc4_initial_x[MAX_BLOCKS] = {SCREEN_WIDTH - GRID_SIZE * 2, SCREEN_WIDTH - GRID_SIZE * 3, SCREEN_WIDTH - GRID_SIZE * 4, SCREEN_WIDTH - GRID_SIZE * 5, SCREEN_WIDTH - GRID_SIZE * 6};
+int bloc4_initial_y = GRID_SIZE+20;
+int bloc5_initial_x[MAX_BLOCKS] = {SCREEN_WIDTH - GRID_SIZE * 2, SCREEN_WIDTH - GRID_SIZE * 3, SCREEN_WIDTH - GRID_SIZE * 4, SCREEN_WIDTH - GRID_SIZE * 5, SCREEN_WIDTH - GRID_SIZE * 6};
+int bloc5_initial_y = GRID_SIZE+30;
+int saucetomate_initial_x[MAX_BLOCKS] = {SCREEN_WIDTH - GRID_SIZE * 2, SCREEN_WIDTH - GRID_SIZE * 3, SCREEN_WIDTH - GRID_SIZE * 4, SCREEN_WIDTH - GRID_SIZE * 5, SCREEN_WIDTH - GRID_SIZE * 6};
+int saucetomate_initial_y = GRID_SIZE+60;
+
+int afficher_menu();
+int afficher_regles();
+
+int main() {
+    // Initialisation
+    allegro_init();
+    install_keyboard();
+    install_mouse();
+    set_color_depth(32);
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+
+    // Chargement des images des joueurs et des blocs
+    imageJ1 = load_bitmap("imageJ1.bmp", NULL);
+    imageJ2 = load_bitmap("imageJ2.bmp", NULL);
+    imageBloc1 = load_bitmap("bloc1.bmp", NULL);
+    imageBloc2 = load_bitmap("bloc2.bmp", NULL);
+    imageBloc3 = load_bitmap("bloc3.bmp", NULL);
+    imageBloc4 = load_bitmap("bloc4.bmp", NULL);
+    imageBloc5 = load_bitmap("bloc5.bmp", NULL);
+    imageSauceTomate = load_bitmap("saucetomate.bmp", NULL);
+    imageFour = load_bitmap("four.bmp", NULL);
+    //Afficher le menu cliquable avec l image
+    afficher_menu();
+    // creation d une bitmap temporaire pour le double tampon
+    BITMAP *buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // Initialisation des blocs déplaçables
+    for (int i = 0; i < MAX_BLOCKS; ++i) {
+        bloc1[i].x = bloc1_initial_x[i];
+        bloc1[i].y = bloc1_initial_y;
+        bloc1[i].grabbed = 0;
+        bloc1[i].type = 1;
+
+        bloc2[i].x = bloc2_initial_x[i];
+        bloc2[i].y = bloc2_initial_y;
+        bloc2[i].grabbed = 0;
+        bloc2[i].type = 2;
+
+        bloc3[i].x = bloc3_initial_x[i];
+        bloc3[i].y = bloc3_initial_y;
+        bloc3[i].grabbed = 0;
+        bloc3[i].type = 3;
+
+        bloc4[i].x = bloc4_initial_x[i];
+        bloc4[i].y = bloc4_initial_y;
+        bloc4[i].grabbed = 0;
+        bloc4[i].type = 4;
+
+        bloc5[i].x = bloc5_initial_x[i];
+        bloc5[i].y = bloc5_initial_y;
+        bloc5[i].grabbed = 0;
+        bloc5[i].type = 5;
+
+        saucetomate[i].x = saucetomate_initial_x[i];
+        saucetomate[i].y = saucetomate_initial_y;
+        saucetomate[i].grabbed = 0;
+        saucetomate[i].type = 6;
+    }
+
+    // Boucle de jeu
+    while (!key[KEY_ESC]) {
+        //Affichage des regles
+        if (key[KEY_R]) {
+            afficher_regles();
+            rest(1000);
         }
-        rest(1);
+        // Gestion des mouvements du joueur 1
+        if (key[KEY_W]) joueur1.y -= PLAYER_SPEED;
+        if (key[KEY_S]) joueur1.y += PLAYER_SPEED;
+        if (key[KEY_A]) joueur1.x -= PLAYER_SPEED;
+        if (key[KEY_D]) joueur1.x += PLAYER_SPEED;
+
+        // Limiter la position du joueur 1 dans les limites du plateau
+        if (joueur1.x < GRID_SIZE) joueur1.x = GRID_SIZE;
+        if (joueur1.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur1.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
+        if (joueur1.y < GRID_SIZE) joueur1.y = GRID_SIZE;
+        if (joueur1.y >= SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE) joueur1.y = SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE;
+
+        // Vérifier si le joueur 1 attrape un bloc avec la touche E
+        if (key[KEY_E]) {
+            for (int i = 0; i < MAX_BLOCKS; ++i) {
+                if (!joueur1.grabbed && !bloc1[i].grabbed && joueur1.x + PLAYER_SIZE >= bloc1[i].x &&
+                    joueur1.x <= bloc1[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= bloc1[i].y &&
+                    joueur1.y <= bloc1[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = bloc1[i].x;
+                    joueur1.grab_y = bloc1[i].y;
+                    bloc1[i].grabbed = 1;
+                    numBlocs1--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                } else if (!joueur1.grabbed && !bloc2[i].grabbed && joueur1.x + PLAYER_SIZE >= bloc2[i].x &&
+                           joueur1.x <= bloc2[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= bloc2[i].y &&
+                           joueur1.y <= bloc2[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = bloc2[i].x;
+                    joueur1.grab_y = bloc2[i].y;
+                    bloc2[i].grabbed = 1;
+                    numBlocs2--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                } else if (!joueur1.grabbed && !bloc3[i].grabbed && joueur1.x + PLAYER_SIZE >= bloc3[i].x &&
+                           joueur1.x <= bloc3[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= bloc3[i].y &&
+                           joueur1.y <= bloc3[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = bloc3[i].x;
+                    joueur1.grab_y = bloc3[i].y;
+                    bloc3[i].grabbed = 1;
+                    numBlocs3--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                } else if (!joueur1.grabbed && !bloc4[i].grabbed && joueur1.x + PLAYER_SIZE >= bloc4[i].x &&
+                           joueur1.x <= bloc4[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= bloc4[i].y &&
+                           joueur1.y <= bloc4[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = bloc4[i].x;
+                    joueur1.grab_y = bloc4[i].y;
+                    bloc4[i].grabbed = 1;
+                    numBlocs4--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                }else if (!joueur1.grabbed && !bloc5[i].grabbed && joueur1.x + PLAYER_SIZE >= bloc5[i].x &&
+                          joueur1.x <= bloc5[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= bloc5[i].y &&
+                          joueur1.y <= bloc5[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = bloc5[i].x;
+                    joueur1.grab_y = bloc5[i].y;
+                    bloc5[i].grabbed = 1;
+                    numBlocs5--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                }else if (!joueur1.grabbed && !saucetomate[i].grabbed && joueur1.x + PLAYER_SIZE >= saucetomate[i].x &&
+                          joueur1.x <= saucetomate[i].x + GRID_SIZE && joueur1.y + PLAYER_SIZE >= saucetomate[i].y &&
+                          joueur1.y <= saucetomate[i].y + GRID_SIZE) {
+                    joueur1.grabbed = 1;
+                    joueur1.grab_x = saucetomate[i].x;
+                    joueur1.grab_y = saucetomate[i].y;
+                    saucetomate[i].grabbed = 1;
+                    numSauceTomate--;
+                    break; // Sortir de la boucle dès qu'un bloc est attrapé
+                }
+            }
+
+            // Mettre à jour la position du bloc déplaçable tenu par le joueur 1
+            if (joueur1.grabbed) {
+                joueur1.grab_x = joueur1.x;
+                joueur1.grab_y = joueur1.y;
+                for (int i = 0; i < MAX_BLOCKS; ++i) {
+                    if (bloc1[i].grabbed) {
+                        bloc1[i].x = joueur1.grab_x;
+                        bloc1[i].y = joueur1.grab_y;
+                    } else if (bloc2[i].grabbed) {
+                        bloc2[i].x = joueur1.grab_x;
+                        bloc2[i].y = joueur1.grab_y;
+                    } else if (bloc3[i].grabbed) {
+                        bloc3[i].x = joueur1.grab_x;
+                        bloc3[i].y = joueur1.grab_y;
+                    } else if (bloc4[i].grabbed) {
+                        bloc4[i].x = joueur1.grab_x;
+                        bloc4[i].y = joueur1.grab_y;
+                    } else if (bloc5[i].grabbed) {
+                        bloc5[i].x = joueur1.grab_x;
+                        bloc5[i].y = joueur1.grab_y;
+                    } else if (saucetomate[i].grabbed) {
+                        saucetomate[i].x = joueur1.grab_x;
+                        saucetomate[i].y = joueur1.grab_y;
+                    }
+                }
+            }
+
+            // Gestion du lâchement du bloc déplaçable par le joueur 1 avec la touche T
+            if (key[KEY_T]) {
+                if (joueur1.grabbed) {
+                    joueur1.grabbed = 0;
+                    for (int i = 0; i < MAX_BLOCKS; ++i) {
+                        if (bloc1[i].grabbed) {
+                            bloc1[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs1 < MAX_BLOCKS) {
+                                bloc1[numBlocs1].x = bloc1_initial_x[numBlocs1];
+                                bloc1[numBlocs1].y = bloc1_initial_y;
+                                bloc1[numBlocs1].type = 1;
+                                numBlocs1++;
+                            }
+                        } else if (bloc2[i].grabbed) {
+                            bloc2[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs2 < MAX_BLOCKS) {
+                                bloc2[numBlocs2].x = bloc2_initial_x[numBlocs2];
+                                bloc2[numBlocs2].y = bloc2_initial_y;
+                                bloc2[numBlocs2].type = 2;
+                                numBlocs2++;
+                            }
+                        } else if (bloc3[i].grabbed) {
+                            bloc3[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs3 < MAX_BLOCKS) {
+                                bloc2[numBlocs3].x = bloc3_initial_x[numBlocs3];
+                                bloc3[numBlocs3].y = bloc3_initial_y;
+                                bloc3[numBlocs3].type = 3;
+                                numBlocs3++;
+                            }
+                        }else if (bloc4[i].grabbed) {
+                            bloc4[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs4 < MAX_BLOCKS) {
+                                bloc4[numBlocs4].x = bloc4_initial_x[numBlocs4];
+                                bloc4[numBlocs4].y = bloc4_initial_y;
+                                bloc4[numBlocs4].type = 4;
+                                numBlocs4++;
+                            }
+                        }
+                        else if (bloc5[i].grabbed) {
+                            bloc5[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs5 < MAX_BLOCKS) {
+                                bloc5[numBlocs5].x = bloc5_initial_x[numBlocs5];
+                                bloc5[numBlocs5].y = bloc5_initial_y;
+                                bloc5[numBlocs5].type = 5;
+                                numBlocs5++;
+                            }
+                        }
+                        else if (saucetomate[i].grabbed) {
+                            saucetomate[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numSauceTomate < MAX_BLOCKS) {
+                                saucetomate[numSauceTomate].x = saucetomate_initial_x[numSauceTomate];
+                                saucetomate[numSauceTomate].y = saucetomate_initial_y;
+                                saucetomate[numSauceTomate].type = 6;
+                                numSauceTomate++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Gestion des mouvements du joueur 2
+            if (key[KEY_UP]) joueur2.y -= PLAYER_SPEED;
+            if (key[KEY_DOWN]) joueur2.y += PLAYER_SPEED;
+            if (key[KEY_LEFT]) joueur2.x -= PLAYER_SPEED;
+            if (key[KEY_RIGHT]) joueur2.x += PLAYER_SPEED;
+
+            // Limiter la position du joueur 2 dans les limites du plateau
+            if (joueur2.x < GRID_SIZE) joueur2.x = GRID_SIZE;
+            if (joueur2.x >= SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE) joueur2.x = SCREEN_WIDTH - GRID_SIZE - PLAYER_SIZE;
+            if (joueur2.y < GRID_SIZE) joueur2.y = GRID_SIZE;
+            if (joueur2.y >= SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE)
+                joueur2.y = SCREEN_HEIGHT - GRID_SIZE - PLAYER_SIZE;
+
+            // Vérifier si le joueur 2 attrape un bloc avec la touche J
+            if (key[KEY_J]) {
+                for (int i = 0; i < MAX_BLOCKS; ++i) {
+                    if (!joueur2.grabbed && !bloc1[i].grabbed && joueur2.x + PLAYER_SIZE >= bloc1[i].x &&
+                        joueur2.x <= bloc1[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= bloc1[i].y &&
+                        joueur2.y <= bloc1[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = bloc1[i].x;
+                        joueur2.grab_y = bloc1[i].y;
+                        bloc1[i].grabbed = 1;
+                        numBlocs1--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    } else if (!joueur2.grabbed && !bloc2[i].grabbed && joueur2.x + PLAYER_SIZE >= bloc2[i].x &&
+                               joueur2.x <= bloc2[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= bloc2[i].y &&
+                               joueur2.y <= bloc2[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = bloc2[i].x;
+                        joueur2.grab_y = bloc2[i].y;
+                        bloc2[i].grabbed = 1;
+                        numBlocs2--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    }
+                    else if (!joueur2.grabbed && !bloc3[i].grabbed && joueur2.x + PLAYER_SIZE >= bloc3[i].x &&
+                             joueur2.x <= bloc3[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= bloc3[i].y &&
+                             joueur2.y <= bloc3[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = bloc3[i].x;
+                        joueur2.grab_y = bloc3[i].y;
+                        bloc3[i].grabbed = 1;
+                        numBlocs3--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    }
+                    else if (!joueur2.grabbed && !bloc4[i].grabbed && joueur2.x + PLAYER_SIZE >= bloc4[i].x &&
+                             joueur2.x <= bloc4[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= bloc4[i].y &&
+                             joueur2.y <= bloc4[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = bloc4[i].x;
+                        joueur2.grab_y = bloc4[i].y;
+                        bloc4[i].grabbed = 1;
+                        numBlocs4--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    }
+                    else if (!joueur2.grabbed && !bloc5[i].grabbed && joueur2.x + PLAYER_SIZE >= bloc5[i].x &&
+                             joueur2.x <= bloc5[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= bloc5[i].y &&
+                             joueur2.y <= bloc5[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = bloc5[i].x;
+                        joueur2.grab_y = bloc5[i].y;
+                        bloc5[i].grabbed = 1;
+                        numBlocs5--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    }
+                    else if (!joueur2.grabbed && !saucetomate[i].grabbed && joueur2.x + PLAYER_SIZE >= saucetomate[i].x &&
+                             joueur2.x <= saucetomate[i].x + GRID_SIZE && joueur2.y + PLAYER_SIZE >= saucetomate[i].y &&
+                             joueur2.y <= saucetomate[i].y + GRID_SIZE) {
+                        joueur2.grabbed = 1;
+                        joueur2.grab_x = saucetomate[i].x;
+                        joueur2.grab_y = saucetomate[i].y;
+                        saucetomate[i].grabbed = 1;
+                        numSauceTomate--;
+                        break; // Sortir de la boucle dès qu'un bloc est attrapé
+                    }
+                }
+            }
+
+            // Mettre à jour la position du bloc déplaçable tenu par le joueur 2
+            if (joueur2.grabbed) {
+                joueur2.grab_x = joueur2.x;
+                joueur2.grab_y = joueur2.y;
+                for (int i = 0; i < MAX_BLOCKS; ++i) {
+                    if (bloc1[i].grabbed) {
+                        bloc1[i].x = joueur2.grab_x;
+                        bloc1[i].y = joueur2.grab_y;
+                    } else if (bloc2[i].grabbed) {
+                        bloc2[i].x = joueur2.grab_x;
+                        bloc2[i].y = joueur2.grab_y;
+                    }
+                    else if (bloc3[i].grabbed) {
+                        bloc3[i].x = joueur2.grab_x;
+                        bloc3[i].y = joueur2.grab_y;
+                    }
+                    else if (bloc4[i].grabbed) {
+                        bloc4[i].x = joueur2.grab_x;
+                        bloc4[i].y = joueur2.grab_y;
+                    }
+                    else if (bloc5[i].grabbed) {
+                        bloc5[i].x = joueur2.grab_x;
+                        bloc5[i].y = joueur2.grab_y;
+                    }
+                    else if (saucetomate[i].grabbed) {
+                        saucetomate[i].x = joueur2.grab_x;
+                        saucetomate[i].y = joueur2.grab_y;
+                    }
+                }
+            }
+
+            // gestion du lachement du bloc deplacable par le joueur 2 avec la touche K
+            if (key[KEY_K]) {
+                if (joueur2.grabbed) {
+                    joueur2.grabbed = 0;
+                    for (int i = 0; i < MAX_BLOCKS; ++i) {
+                        if (bloc1[i].grabbed) {
+                            bloc1[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs1 < MAX_BLOCKS) {
+                                bloc1[numBlocs1].x = bloc1_initial_x[numBlocs1];
+                                bloc1[numBlocs1].y = bloc1_initial_y;
+                                bloc1[numBlocs1].type = 1;
+                                numBlocs1++;
+                            }
+                        } else if (bloc2[i].grabbed) {
+                            bloc2[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs2 < MAX_BLOCKS) {
+                                bloc2[numBlocs2].x = bloc2_initial_x[numBlocs2];
+                                bloc2[numBlocs2].y = bloc2_initial_y;
+                                bloc2[numBlocs2].type = 2;
+                                numBlocs2++;
+                            }
+                        }
+                        else if (bloc3[i].grabbed) {
+                            bloc3[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs3 < MAX_BLOCKS) {
+                                bloc3[numBlocs3].x = bloc3_initial_x[numBlocs2];
+                                bloc3[numBlocs3].y = bloc3_initial_y;
+                                bloc3[numBlocs3].type = 3;
+                                numBlocs3++;
+                            }
+                        }else if (bloc4[i].grabbed) {
+                            bloc4[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs4 < MAX_BLOCKS) {
+                                bloc4[numBlocs4].x = bloc4_initial_x[numBlocs4];
+                                bloc4[numBlocs4].y = bloc4_initial_y;
+                                bloc4[numBlocs4].type = 4;
+                                numBlocs4++;
+                            }
+                        }
+                        else if (bloc5[i].grabbed) {
+                            bloc5[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numBlocs5 < MAX_BLOCKS) {
+                                bloc5[numBlocs5].x = bloc5_initial_x[numBlocs5];
+                                bloc5[numBlocs5].y = bloc5_initial_y;
+                                bloc5[numBlocs5].type = 5;
+                                numBlocs5++;
+                            }
+                        }
+                        else if (saucetomate[i].grabbed) {
+                            saucetomate[i].grabbed = 0;
+                            // Ajouter le bloc lâché
+                            if (numSauceTomate < MAX_BLOCKS) {
+                                saucetomate[numSauceTomate].x = saucetomate_initial_x[numSauceTomate];
+                                saucetomate[numSauceTomate].y = saucetomate_initial_y;
+                                saucetomate[numSauceTomate].type = 6;
+                                numSauceTomate++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Changer le type de bloc de bloc1 à bloc2 avec la touche L
+            if (key[KEY_L]) {
+                for (int i = 0; i < MAX_BLOCKS; ++i) {
+                    if (bloc1[i].grabbed && bloc1[i].type == 1) {
+                        bloc1[i].type = 2;
+                        break; // Sortir de la boucle dès qu'un bloc est modifié
+                    } else if (bloc2[i].grabbed && bloc2[i].type == 2) {
+                        bloc2[i].type = 1;
+                        break; // Sortir de la boucle dès qu'un bloc est modifié
+                    }
+                }
+            }
+
+            // Changer le type de bloc de bloc1 à bloc2 avec la touche X
+            if (key[KEY_X]) {
+                for (int i = 0; i < MAX_BLOCKS; ++i) {
+                    if (bloc1[i].grabbed && bloc1[i].type == 1) {
+                        bloc1[i].type = 2;
+                        break; // Sortir de la boucle dès qu'un bloc est modifié
+                    } else if (bloc2[i].grabbed && bloc2[i].type == 2) {
+                        bloc2[i].type = 1;
+                        break; // Sortir de la boucle dès qu'un bloc est modifié
+                    }
+                }
+            }
+
+            // Dessiner le plateau quadrillé avec des blocs violets sur les extrémités droite et gauche,
+            // et des bords verts sur les extrémités hautes et basses sur la bitmap temporaire
+            clear_bitmap(buffer); // Effacer la bitmap temporaire avant de redessiner
+            for (int x = 0; x < SCREEN_WIDTH; x += GRID_SIZE) {
+                for (int y = 0; y < SCREEN_HEIGHT; y += GRID_SIZE) {
+                    // Dessiner des blocs violets sur les extrémités droite et gauche
+                    if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
+                        rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(255, 0, 255)); // Violet
+                    }
+                        // Dessiner des bords verts sur les extrémités hautes et basses
+                    else if (y == 0 || y == SCREEN_HEIGHT - GRID_SIZE) {
+                        rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 255, 0)); // Vert
+                    } else {
+                        rectfill(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE,
+                                 makecol(192, 192, 192)); // Gris pour le reste du plateau
+                    }
+
+                    // Dessiner une bordure noire autour de chaque bloc vert
+                    if (x == 0 || x == SCREEN_WIDTH - GRID_SIZE) {
+                        rect(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 0, 0));
+                    }
+                        // Dessiner une bordure noire autour de chaque bloc violet
+                    else if (y == 0 || y == SCREEN_HEIGHT - GRID_SIZE) {
+                        rect(buffer, x, y, x + GRID_SIZE, y + GRID_SIZE, makecol(0, 0, 0));
+                    }
+                }
+            }
+
+            // Dessiner les blocs déplaçables
+            for (int i = 0; i < MAX_BLOCKS; ++i) {
+                if (!bloc1[i].grabbed) {
+                    if (bloc1[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, bloc1[i].x, bloc1[i].y);
+                    } else if (bloc1[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, bloc1[i].x, bloc1[i].y);
+                    } else if (bloc1[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, bloc1[i].x, bloc1[i].y);
+                    }else if (bloc1[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, bloc1[i].x, bloc1[i].y);
+                    }else if (bloc1[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, bloc1[i].x, bloc1[i].y);
+                    }else if (bloc1[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, bloc1[i].x, bloc1[i].y);
+                    }
+                }
+
+                if (!bloc2[i].grabbed) {
+                    if (bloc2[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, bloc2[i].x, bloc2[i].y);
+                    } else if (bloc2[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, bloc2[i].x, bloc2[i].y);
+                    } else if (bloc2[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, bloc2[i].x, bloc2[i].y);
+                    }else if (bloc2[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, bloc2[i].x, bloc2[i].y);
+                    }else if (bloc2[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, bloc2[i].x, bloc2[i].y);
+                    }else if (bloc2[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, bloc2[i].x, bloc2[i].y);
+                    }
+                }
+                if (!bloc3[i].grabbed) {
+                    if (bloc3[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, bloc3[i].x, bloc3[i].y);
+                    } else if (bloc3[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, bloc3[i].x, bloc3[i].y);
+                    } else if (bloc3[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, bloc3[i].x, bloc3[i].y);
+                    }else if (bloc3[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, bloc3[i].x, bloc3[i].y);
+                    }else if (bloc3[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, bloc3[i].x, bloc3[i].y);
+                    }else if (bloc3[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, bloc3[i].x, bloc3[i].y);
+                    }
+                }
+                if (!bloc4[i].grabbed) {
+                    if (bloc4[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, bloc4[i].x, bloc4[i].y);
+                    } else if (bloc4[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, bloc4[i].x, bloc4[i].y);
+                    } else if (bloc4[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, bloc4[i].x, bloc4[i].y);
+                    }
+                    else if (bloc4[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, bloc4[i].x, bloc4[i].y);
+                    }
+                    else if (bloc4[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, bloc4[i].x, bloc4[i].y);
+                    }
+                    else if (bloc4[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, bloc4[i].x, bloc4[i].y);
+                    }
+                }
+                if (!bloc5[i].grabbed) {
+                    if (bloc5[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, bloc5[i].x, bloc5[i].y);
+                    } else if (bloc5[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, bloc5[i].x, bloc5[i].y);
+                    } else if (bloc5[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, bloc5[i].x, bloc5[i].y);
+                    }
+                    else if (bloc5[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, bloc5[i].x, bloc5[i].y);
+                    }
+                    else if (bloc5[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, bloc5[i].x, bloc5[i].y);
+                    }
+                    else if (bloc5[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, bloc5[i].x, bloc5[i].y);
+                    }
+                }
+                if (!saucetomate[i].grabbed) {
+                    if (saucetomate[i].type == 1) {
+                        draw_sprite(buffer, imageBloc1, saucetomate[i].x, saucetomate[i].y);
+                    } else if (saucetomate[i].type == 2) {
+                        draw_sprite(buffer, imageBloc2, saucetomate[i].x, saucetomate[i].y);
+                    } else if (saucetomate[i].type == 3) {
+                        draw_sprite(buffer, imageBloc3, saucetomate[i].x, saucetomate[i].y);
+                    }
+                    else if (saucetomate[i].type == 4) {
+                        draw_sprite(buffer, imageBloc4, saucetomate[i].x, saucetomate[i].y);
+                    }
+                    else if (saucetomate[i].type == 5) {
+                        draw_sprite(buffer, imageBloc5, saucetomate[i].x, saucetomate[i].y);
+                    }
+                    else if (saucetomate[i].type == 6) {
+                        draw_sprite(buffer, imageSauceTomate, saucetomate[i].x, saucetomate[i].y);
+                    }
+                }
+            }
+
+            // Dessiner les joueurs sur la bitmap temporaire
+            draw_sprite(buffer, imageJ1, joueur1.x, joueur1.y);
+            draw_sprite(buffer, imageJ2, joueur2.x, joueur2.y);
+
+            // Afficher le nombre de blocs disponibles sur le plateau
+            textprintf_ex(buffer, font, 10, 10, makecol(105, 255, 255), -1, "Blocs disponibles:");
+            textprintf_ex(buffer, font, 10, 30, makecol(105, 255, 255), -1, "Bloc1: %d", numBlocs1);
+            textprintf_ex(buffer, font, 10, 50, makecol(105, 255, 255), -1, "Bloc2: %d", numBlocs2);
+            textprintf_ex(buffer, font, 10, 30, makecol(105, 255, 255), -1, "Bloc3: %d", numBlocs3);
+            textprintf_ex(buffer, font, 10, 50, makecol(105, 255, 255), -1, "Bloc4: %d", numBlocs4);
+            textprintf_ex(buffer, font, 10, 30, makecol(105, 255, 255), -1, "Bloc5: %d", numBlocs5);
+            textprintf_ex(buffer, font, 10, 50, makecol(105, 255, 255), -1, "SauceTomate: %d", numSauceTomate);
+
+            // Copier la bitmap temporaire sur l'écran
+            blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // Attendre un court instant pour limiter la vitesse de déplacement
+            rest(5);
+        }
+
+        // Libération des ressources Allegro
+        destroy_bitmap(buffer);
+        destroy_bitmap(imageJ1);
+        destroy_bitmap(imageJ2);
+        destroy_bitmap(imageBloc1);
+        destroy_bitmap(imageBloc2);
+        destroy_bitmap(imageBloc3);
+        destroy_bitmap(imageBloc4);
+        destroy_bitmap(imageBloc5);
+        destroy_bitmap(imageSauceTomate);
+
+        allegro_exit();
+
+        return 0;
     }
 }
+END_OF_MAIN()
 
-void afficher_menu() {
-    show_mouse(screen);
-    clear_to_color(screen, makecol(255, 255, 255));
 
-    BITMAP* image1 = load_bitmap("image1.bmp", NULL);
-    if (!image1) {
-        allegro_message("impossible de charger l'image image1.bmp!");
-        return;
-    }
-    blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    destroy_bitmap(image1);
-
-    // faire un rectangle pour les règles
-    int regles_x = SCREEN_WIDTH / 2 - 130;
-    int regles_y = 100;
-    rect(screen, regles_x, regles_y, regles_x + 260, regles_y + 50, makecol(0, 0, 0));
-    textout_centre_ex(screen, font, "Appuyez sur 'r' pour les règles.", regles_x + 130, regles_y + 25, makecol(0, 0, 0), -1);
-
-    // faire un bouton cliquable "jouer"
-    int jouer_x = SCREEN_WIDTH / 2 - 50;
-    int jouer_y = SCREEN_HEIGHT / 2;
-    int jouer_w = 100;
-    int jouer_h = 50;
-    int jouer_color = makecol(0, 0, 255);
-
-    // faire un bouton cliquable "les commandes"
-    int commandes_x = SCREEN_WIDTH / 2 - 75;
-    int commandes_y = jouer_y + 80; // placé en dessous du bouton "jouer"
-    int commandes_w = 150;
-    int commandes_h = 50;
-    int commandes_color = makecol(0, 0, 255);
-
-    while (!mouse_b & 1) {
-        rest(1);
-
-        // dessiner le bouton "jouer"
-        rect(screen, jouer_x, jouer_y, jouer_x + jouer_w, jouer_y + jouer_h, jouer_color);
-        textout_centre_ex(screen, font, "JOUER", jouer_x + jouer_w / 2, jouer_y + jouer_h / 2, makecol(255, 255, 255), -1);
-
-        // tester si "jouer" est cliqué
-        if (mouse_x >= jouer_x && mouse_x <= jouer_x + jouer_w && mouse_y >= jouer_y && mouse_y <= jouer_y + jouer_h) {
-            jouer_color = makecol(255, 0, 0);
-            if (mouse_b & 1) {
-                // code pour démarrer le jeu ici
-                break;
-            }
-        } else {
-            jouer_color = makecol(0, 0, 255);
-        }
-
-        // dessiner le bouton "les commandes"
-        rect(screen, commandes_x, commandes_y, commandes_x + commandes_w, commandes_y + commandes_h, commandes_color);
-        textout_centre_ex(screen, font, "LES COMMANDES", commandes_x + commandes_w / 2, commandes_y + commandes_h / 2, makecol(255, 255, 255), -1);
-
-        // tester si "les commandes" est cliqué
-        if (mouse_x >= commandes_x && mouse_x <= commandes_x + commandes_w && mouse_y >= commandes_y && mouse_y <= commandes_y + commandes_h) {
-            commandes_color = makecol(255, 0, 0);
-            if (mouse_b & 1) {
-                afficher_commandes();
-                clear_to_color(screen, makecol(255, 255, 255));
-                blit(image1, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // Recharger l'image de fond après retour du menu des commandes
-            }
-        } else {
-            commandes_color = makecol(0, 0, 255);
-        }
-    }
-
-    show_mouse(NULL);
-}
